@@ -1,0 +1,8 @@
+﻿body {
+    background-color: #1e1e1e !important;
+    color: #ffffff !important;
+}
+
+.swagger-ui {
+    filter: invert(90%) hue-rotate(180deg);
+}
