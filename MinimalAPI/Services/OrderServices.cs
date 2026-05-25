@@ -13,6 +13,24 @@ namespace MinimalAPI.Services
         {
             this._context = context;
         }
+        public async Task<IEnumerable<PlacedOrderDTO>> GetPlacedOrders()
+        {
+            var data = await (
+                from p in _context.Products
+                join oi in _context.OrderItems on p.ProductId equals oi.ProductId
+                join o in _context.Orders on oi.OrderId equals o.OrderId
+                select new PlacedOrderDTO
+                {
+                    CustomerName = o.CustomerName,
+                    CustomerEmail = o.CustomerEmail,
+                    OrderId = oi.OrderId,
+                    ProductId = oi.ProductId,
+                    ProductQuantity = oi.Quanity,
+                    TotalPrice = oi.TotalPrice,
+                }).AsNoTracking().ToListAsync();
+            return data;
+        }
+
         public async Task<OrderDTO> InsertOrder(OrderDTO orderDTO)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();

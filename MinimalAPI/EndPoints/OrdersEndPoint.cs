@@ -7,7 +7,9 @@ namespace MinimalAPI.EndPoints
     {
         public static void OrderAPI(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/orderInsert", async (IOrderRepository orderRepo, OrderDTO orderDTO) =>
+            var orderGroup = app.MapGroup("/api/orders").WithTags("Orders");
+
+            orderGroup.MapPost("/orderInsert", async (IOrderRepository orderRepo, OrderDTO orderDTO) =>
             {
                 try
                 {
@@ -23,6 +25,22 @@ namespace MinimalAPI.EndPoints
                     return Results.BadRequest(new { errorMessage = ex.Message });
                 }
 
+            });
+
+            orderGroup.MapGet("/gePlacedOrder", async (IOrderRepository orderRepo) =>
+            {
+                try
+                {
+                    var orders = await orderRepo.GetPlacedOrders();
+                    Console.WriteLine(orders);
+                    if (orders == null || !orders.Any())
+                        return Results.BadRequest(new {errorMessage = "Data is Null!"});
+                    return Results.Ok(new { data = orders });
+                }  
+                catch (Exception ex)
+                {
+                    return Results.BadRequest(new { errorMessage = "Error occurred!", ex.Message });
+                }
             });
         }
     }

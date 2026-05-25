@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MinimalAPI.CollectionExtension;
 using MinimalAPI.DbContextClass;
 using MinimalAPI.EndPoints;
 using MinimalAPI.Repository;
@@ -11,8 +12,7 @@ builder.Services.AddDbContext<MyDbContext>(options => options.UseNpgsql(connecti
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<IProductRepository, ProductService>();
-builder.Services.AddScoped<IOrderRepository, OrderServices>();
+builder.Services.APIServiceCollection();   
 
 var app = builder.Build();
 app.UseStaticFiles();
@@ -27,7 +27,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.ProductAPI();
-app.OrderAPI();
+app.APIEndpointsCollection();
 app.Run();
 

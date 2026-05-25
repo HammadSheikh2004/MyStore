@@ -7,7 +7,9 @@ namespace MinimalAPI.EndPoints
     {
         public static void ProductAPI(this IEndpointRouteBuilder app)
         {
-            app.MapPost("/api/insertProduct", async (ProductDTO productDto, IProductRepository productRepo) =>
+            var productGroup = app.MapGroup("/api/products").WithTags("Products");
+
+            productGroup.MapPost("/insertProduct", async (ProductDTO productDto, IProductRepository productRepo) =>
             {
                 try
                 {
@@ -22,7 +24,7 @@ namespace MinimalAPI.EndPoints
                     return Results.BadRequest(new { errorMessage = ex.Message });
                 }
             });
-            app.MapGet("/api/getProducts", async (IProductRepository productRepo) =>
+            productGroup.MapGet("/getProducts", async (IProductRepository productRepo) =>
             {
                 var data = await productRepo.GetProduct();
 
@@ -33,7 +35,7 @@ namespace MinimalAPI.EndPoints
 
                 return Results.Ok(data);
             });
-            app.MapGet("/api/editProduct/{id}", async (IProductRepository productRepo, int id) =>
+            productGroup.MapGet("/editProduct/{id}", async (IProductRepository productRepo, int id) =>
             {
                 try
                 {
@@ -49,7 +51,7 @@ namespace MinimalAPI.EndPoints
                     return Results.BadRequest(new { error = ex.Message });
                 }
             });
-            app.MapPut("/api/updateProduct/{id}", async (IProductRepository productRepo, int id, ProductDTO productDTO) =>
+            productGroup.MapPut("/updateProduct/{id}", async (IProductRepository productRepo, int id, ProductDTO productDTO) =>
             {
                 try
                 {
@@ -65,7 +67,7 @@ namespace MinimalAPI.EndPoints
                     return Results.BadRequest(new { error = ex.Message });
                 }
             });
-            app.MapDelete("/api/deleteProduct/{id}", async (IProductRepository productRepo, int id) =>
+            productGroup.MapDelete("/deleteProduct/{id}", async (IProductRepository productRepo, int id) =>
             {
                 try
                 {
